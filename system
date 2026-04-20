@@ -1,0 +1,32 @@
+
+│
+├── app.py
+├── requirements.txt
+├── README.md
+│
+├── system_core/
+│   ├── system_config.txt
+│   ├── data_raw/
+│   ├── data_processed/
+│   ├── models/
+│   ├── logs/
+│   │   └── system_log.txt
+│   ├── filters/
+│   │   └── decision_filter.txt
+│   └── exports/
+│       └── export_format.txt
+│
+├── app_modules/
+│   ├── pattern_analysis/
+│   │   └── pattern_rules.txt
+│   ├── decision_engine/
+│   │   ├── decision_logic.txt
+│   │   └── intuition_handler.txt
+│   ├── user_interface/
+│   └── premium_features/
+│       └── premium_logic.txt
+│
+├── config/
+├── docs/
+│   └── system_philosophy.txt
+└── tests/
