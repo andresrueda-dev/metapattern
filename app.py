@@ -1,3 +1,18 @@
+st.markdown("""
+<style>
+body {
+    background-color: #0f172a;
+}
+h1, h2, h3 {
+    color: #22c55e;
+}
+.stButton>button {
+    background-color: #22c55e;
+    color: white;
+    border-radius: 10px;
+}
+</style>
+""", unsafe_allow_html=True)
 import streamlit as st
 from auth import login, check_auth
 from modules import chispazo, melate
