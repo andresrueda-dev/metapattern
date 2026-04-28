@@ -1,1 +1,68 @@
+import streamlit as st
+from utils.generator import generar_chispazo
+from utils.storage import guardar, cargar
+from utils.analysis import calcular_aciertos, score_metapattern, frecuencia_numeros, top_calientes, top_frios
+from config import DATA_CHISPAZO
+from auth import es_pro
 
+def run():
+    st.header("🎯 Chispazo PRO")
+
+    if es_pro():
+        st.success("Modo PRO activado 🚀")
+    else:
+        st.warning("Modo GRATIS limitado")
+
+    limite = 2 if not es_pro() else 10
+    cantidad = st.slider("Cantidad", 1, limite, 2)
+
+    if st.button("Generar combinaciones"):
+        resultados = [generar_chispazo() for _ in range(cantidad)]
+
+        for r in resultados:
+            score = score_metapattern(r)
+            st.write(f"{r} → Score MetaPattern: {score}/100")
+
+        guardar(DATA_CHISPAZO, resultados)
+
+    # =========================
+    # REGISTRAR RESULTADO
+    # =========================
+    st.subheader("Registrar resultado")
+    resultado = st.text_input("Ej: 4,6,11,22,25")
+
+    if st.button("Actualizar resultados"):
+        df = cargar(DATA_CHISPAZO)
+        df["resultado"] = resultado
+        df["aciertos"] = df["numeros"].apply(lambda x: calcular_aciertos(x, resultado))
+        df.to_csv(DATA_CHISPAZO, index=False)
+
+    # =========================
+    # DASHBOARD PRO
+    # =========================
+    st.subheader("📊 Dashboard")
+
+    df = cargar(DATA_CHISPAZO)
+
+    if not df.empty:
+        total = len(df)
+        promedio = df["aciertos"].mean()
+        max_aciertos = df["aciertos"].max()
+
+        st.metric("Jugadas", total)
+        st.metric("Promedio aciertos", round(promedio, 2))
+        st.metric("Mejor resultado", max_aciertos)
+
+        # 🔥 FRECUENCIAS
+        freq = frecuencia_numeros(df)
+
+        calientes = top_calientes(freq)
+        frios = top_frios(freq)
+
+        st.subheader("🔥 Números calientes")
+        st.write(calientes)
+
+        st.subheader("❄️ Números fríos")
+        st.write(frios)
+
+        st.dataframe(df)
